@@ -1,20 +1,24 @@
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <div class="container">
-      <a class="navbar-brand" href="#">Dating App</a>          
-        <ul class="navbar-nav me-auto mb-2 mb-md-0" *ngIf="accountService.currentUser$ | async">
+      <a class="navbar-brand" routerLink='/'>Dating App</a>          
+        <ul class="navbar-nav me-auto mb-2 mb-md-0" >
+         <ng-container>
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="#">Matches</a>
+            <a class="nav-link " routerLinkActive='active' aria-current="page" routerLink='/members' >Matches</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Lists</a>
+            <a class="nav-link"  routerLinkActive='active'  routerLink='/lists'>Lists</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#" tabindex="-1">Messages</a>
-          </li>         
+            <a class="nav-link"  routerLinkActive='active' routerLink='/messages' tabindex="-1">Messages</a>
+          </li>   
+
+         </ng-container>
+                
         </ul>
 
-        <div class="dropdown" *ngIf="accountService.currentUser$ | async" >
-          <a class="dropdown-toggle.text text-light">Welcome user</a>
+        <div class="dropdown" *ngIf="(accountService.currentUser$ | async) as user" dropdown>
+          <a class="dropdown-toggle.text text-light">Welcome user{{user.username | titlecase}}</a>
           <div class="dropdown-menu mt-3" *dropdownMenu>
             <a href="" class="dropdown-item">Edit Profile</a>
             <div class="dropdown-divider"></div>
@@ -26,7 +30,7 @@
           <input name="username" [(ngModel)]="model.username" class="form-control mr-sm-2" type="text" placeholder="Username" aria-label="Search">
           
           <input name="password" [(ngModel)]="model.password" class="form-control mr-sm-2" type="password" placeholder="Password" aria-label="Search">
-          <button class="btn btn-outline-success mr-sm-2" type="submit">Login</button>
+          <button class="btn btn-success mr-sm-2" type="submit">Login</button>
         </form>     
     </div>
   </nav>
