@@ -6,6 +6,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using API.Interfaces;
+using API.DTOs;
+using AutoMapper;
 
 namespace API.Controllers
 {
@@ -14,28 +17,47 @@ namespace API.Controllers
     {
        
         private readonly DataContext _context;
-        public UsersController(DataContext context)
+        private readonly IMapper _mapper;
+        private readonly IUserRepository _userRepository;
+        public UsersController(IUserRepository userRepository, IMapper maper)
         {
-            _context = context;
+            _userRepository = userRepository;
+           // _context = context;
 
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
         {
+            var users = await _userRepository.GetMembersAsync();
             
-
-            return await _context.Users.ToListAsync();
+            //var usersToReturn = _mapper.Map<IEnumerable<MemberDto>>(users);
+           
+            return Ok(users);
 
         }
 
-        [Authorize]
-        [HttpGet("{id}")]
-        public async Task<ActionResult<AppUser>> GetUser(int id)
+        public async Task<AppUser>GetuserByysernameAsync(int id)
+        {
+            return await _context.Users
+            .Include(p => p.Photos)
+            .SingleOrDefaultAsync(x => x.UserName == username);
+        }
+
+        public async Task<IEnumerable<AppUser>>GetAppUsersAsync()
+        {
+            return await _context.Users
+            .Include(p => p.Photos)
+            .ToListAsync();
+        }
+
+
+        [HttpGet("{username}")]
+        public async Task<ActionResult<MemberDto>> GetUser(string username)
         {
             
-            return await _context.Users.FindAsync(id);
-
+           return await   _userRepository.GetMembersAsync(username);
+           
         }
     }
 }
